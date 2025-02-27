@@ -35,3 +35,18 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Spring Boot Specific (additional)
+*.log
+spring.log
+
+# Sensitive Configuration Files
+application.properties
+
+# DevTools and Logs
+*.log.*
+logs/
+
+# OS-specific files (additional, if not covered)
+.DS_Store  # macOS
+Thumbs.db  # Windows
