@@ -1,4 +1,4 @@
-package org.example.dailytier;
+package org.example.dailytier.model;
 
 import jakarta.persistence.*;
 
