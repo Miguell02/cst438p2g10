@@ -10,6 +10,9 @@ public class TierListController {
     public String home() {
         return "Hello World";
     }
+
+
+
 }
 
 // sql request query // start
