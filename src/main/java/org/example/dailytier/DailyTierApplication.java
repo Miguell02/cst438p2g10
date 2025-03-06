@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class DailyTierApplication {
 
     public static void main(String[] args) {
+
         SpringApplication.run(DailyTierApplication.class, args);
     }
 
