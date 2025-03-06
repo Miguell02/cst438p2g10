@@ -31,3 +31,9 @@ button {
 button:hover{
     background-color: darkgreen;
 }
+
+#title {
+    text-align: center;
+    font-family: Impact;
+    font-weight: lighter;
+}
