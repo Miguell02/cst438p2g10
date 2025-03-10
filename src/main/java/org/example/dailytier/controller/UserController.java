@@ -60,7 +60,7 @@ public class UserController {
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
-            return ResponseEntity.status(404).body(null);  // User not found
+            return ResponseEntity.status(404).body(null);
         }
     }
 }
