@@ -35,6 +35,72 @@ public class UserService {
         return true; // Login successful
     }
 
+
+    public User createUserAsAdmin(String adminUsername, String adminPassword, String newUsername, String newPassword, String newEmail) {
+        User admin = userRepository.findByUsername(adminUsername);
+
+        if (admin == null || !admin.isAdmin() || !admin.getPassword().equals(adminPassword)) {
+            return null;
+        }
+
+        User newUser = new User();
+        newUser.setUsername(newUsername);
+        newUser.setPassword(newPassword);
+        newUser.setEmail(newEmail);
+        newUser.setAdmin(false);
+
+        return userRepository.save(newUser);
+    }
+
+    public boolean deleteUserAsAdmin(String adminUsername, String adminPassword, String deleteUsername, boolean confirm) {
+        User admin = userRepository.findByUsername(adminUsername);
+
+        if (admin == null || !admin.isAdmin() || !admin.getPassword().equals(adminPassword)) {
+            return false; // Unauthorized
+        }
+
+        if (!confirm) {
+            System.out.println("Admin attempted to delete user without confirmation.");
+            return false;
+        }
+
+        User userToDelete = userRepository.findByUsername(deleteUsername);
+        if (userToDelete == null) {
+            System.out.println("User not found: " + deleteUsername);
+            return false;
+        }
+
+        userRepository.delete(userToDelete);
+        return true;
+    }
+
+    public boolean updateUserAsAdmin(String adminUsername, String adminPassword, String updateUsername, String newEmail, String newPassword) {
+        User admin = userRepository.findByUsername(adminUsername);
+
+        if (admin == null || !admin.isAdmin() || !admin.getPassword().equals(adminPassword)) {
+            return false;
+        }
+
+        User userToUpdate = userRepository.findByUsername(updateUsername);
+        if (userToUpdate == null) {
+            return false;
+        }
+
+        if (newEmail != null && !newEmail.isEmpty()) {
+            userToUpdate.setEmail(newEmail);
+        }
+
+        if (newPassword != null && !newPassword.isEmpty()) {
+            userToUpdate.setPassword(newPassword);
+        }
+
+        userRepository.save(userToUpdate);
+        return true;
+    }
+
+
+
+
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
