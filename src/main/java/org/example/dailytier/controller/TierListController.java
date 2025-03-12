@@ -31,6 +31,7 @@ public class TierListController {
     }
 
     @GetMapping("/showAllSports")
+    @ResponseBody
     public List<Sport> showAllSports() {
         return sportRepository.findAll();
     }

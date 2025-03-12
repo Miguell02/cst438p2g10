@@ -21,8 +21,9 @@ public class User {
     @Column(name = "is_admin", nullable = false)
     private boolean isAdmin;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", nullable = false, updatable = false, insertable = false)
     private java.sql.Timestamp createdAt;
+
 
     // Getters
     public Long getId() {
