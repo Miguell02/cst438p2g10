@@ -2,6 +2,9 @@ package org.example.dailytier.model;
 
 import jakarta.persistence.*;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "users")
 public class User {
@@ -62,5 +65,11 @@ public class User {
     }
     public void setCreatedAt(java.sql.Timestamp createdAt) {
         this.createdAt = createdAt;
+    }
+    @PrePersist
+    public void onPrePersist() {
+        if (this.createdAt == null) {
+            this.createdAt = Timestamp.valueOf(LocalDateTime.now());
+        }
     }
 }
