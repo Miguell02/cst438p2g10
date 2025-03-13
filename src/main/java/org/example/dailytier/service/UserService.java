@@ -4,6 +4,7 @@ import org.example.dailytier.model.User;
 import org.example.dailytier.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -29,7 +30,15 @@ public class UserService {
 
 
     public boolean deleteUser(Long id, String password) {
+        Optional<User> userOptional = userRepository.findById(id);
 
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            if (user.getPassword().equals(password)) {  // Ensure password matches
+                userRepository.deleteById(id);
+                return true;
+            }
+        }
         return false;
     }
 
@@ -43,4 +52,12 @@ public class UserService {
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
+
+    public User getUserByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+
 }
+
+
