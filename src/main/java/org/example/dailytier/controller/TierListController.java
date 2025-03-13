@@ -30,7 +30,14 @@ public class TierListController {
         return "signup.html";  // Serves signup.html from resources/static/
     }
 
+    @GetMapping("/profile")
+    public String profilePage() {
+        return "profile.html";  // Serves signup.html from resources/static/
+    }
+
+
     @GetMapping("/showAllSports")
+    @ResponseBody
     public List<Sport> showAllSports() {
         return sportRepository.findAll();
     }
