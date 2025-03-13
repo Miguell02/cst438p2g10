@@ -31,14 +31,10 @@ public class UserController {
     }
 
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/delete/{id}") //Example test in Postman: DELETE http://localhost:8080/users/delete/1?password=testpassword
     public String deleteUser(@PathVariable Long id, @RequestParam String password) {
         boolean isDeleted = userService.deleteUser(id, password);
-        if (isDeleted) {
-            return "User deleted successfully";
-        } else {
-            return "Password confirmation failed, user not deleted";
-        }
+        return isDeleted ? "User deleted successfully" : "Password confirmation failed, user not deleted";
     }
 
 
@@ -57,4 +53,10 @@ public class UserController {
     public User getUser(@PathVariable Long id) {
         return userService.getUserById(id);
     }
+
+    @GetMapping("/profile")
+    public User getUserProfile(@RequestParam String username) {
+        return userService.getUserByUsername(username);
+    }
+
 }
