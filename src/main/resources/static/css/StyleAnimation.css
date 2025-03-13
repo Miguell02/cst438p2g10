@@ -29,6 +29,8 @@ header h4 {
     top: 0;
     width:100%;
     height: 100vh;
+    background-image: url("../Images/game.png");
+    position:absolute;
     background-color: #161616;
     transition: 1s;
 }
