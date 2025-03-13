@@ -40,4 +40,34 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         });
     }
+
+    const loginForm = document.getElementById("loginForm");
+
+    if (loginForm) {
+        loginForm.addEventListener("submit", async function (event) {
+            event.preventDefault();
+
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const credentials = { username, password };
+
+            try {
+                const response = await fetch("http://localhost:8080/users/login?username=" + username + "&password=" + password, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                });
+                const textResponse = await response.text();
+                if (response.ok) {
+                    alert(textResponse);
+                    localStorage.setItem("username", username);
+                    window.location.href = "dashboard.html";
+                } else {
+                    alert("Login DIDNT WORK!!!: " + textResponse);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("something happened man what the fuck");
+            }
+        });
+    }
 });

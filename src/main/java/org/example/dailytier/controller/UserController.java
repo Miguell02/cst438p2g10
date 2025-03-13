@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -27,7 +29,7 @@ public class UserController {
         if (isLoggedIn) {
             return ResponseEntity.ok("User logged in successfully!");
         } else {
-            return ResponseEntity.status(401).body("Invalid username or password!");
+            return ResponseEntity.status(401).body("Invalid username or password you stupid fuck!");
         }
     }
 
@@ -62,5 +64,12 @@ public class UserController {
         } else {
             return ResponseEntity.status(404).body(null);
         }
+    }
+
+    // all user brah:
+    @GetMapping("/all")
+    public ResponseEntity<List<User>> getAllUsers() {
+        List<User> users = userService.getAllUsers();
+        return ResponseEntity.ok(users);
     }
 }
