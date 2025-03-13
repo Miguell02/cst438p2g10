@@ -33,15 +33,11 @@ public class UserController {
         }
     }
 
-    // delete a mother fucker
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> deleteUser(@PathVariable Long id, @RequestParam String password) {
+
+    @DeleteMapping("/delete/{id}") //Example test in Postman: DELETE http://localhost:8080/users/delete/1?password=testpassword
+    public String deleteUser(@PathVariable Long id, @RequestParam String password) {
         boolean isDeleted = userService.deleteUser(id, password);
-        if (isDeleted) {
-            return ResponseEntity.ok("User deleted successfully");
-        } else {
-            return ResponseEntity.status(400).body("Password confirmation failed, user not deleted");
-        }
+        return isDeleted ? "User deleted successfully" : "Password confirmation failed, user not deleted";
     }
 
     // update details brah
