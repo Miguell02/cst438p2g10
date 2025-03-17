@@ -28,6 +28,15 @@ button {
     border-radius: 10px;
 }
 
+#deleteAccount {
+    background-color: red;
+}
+
+.table{
+    margin-left: auto;
+    margin-right: auto;
+}
+
 button:hover{
     background-color: darkgreen;
 }

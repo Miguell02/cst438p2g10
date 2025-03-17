@@ -24,14 +24,16 @@ public class UserController {
 
     // log in existing broski
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestParam String username, @RequestParam String password) {
-        boolean isLoggedIn = userService.loginUser(username, password);
-        if (isLoggedIn) {
-            return ResponseEntity.ok("User logged in successfully!");
+    public ResponseEntity<?> loginUser(@RequestParam String username, @RequestParam String password) {
+        User user = userService.getUserByUsername(username);
+
+        if (user != null && userService.loginUser(username, password)) {
+            return ResponseEntity.ok(user); // Return user object with ID
         } else {
             return ResponseEntity.status(401).body("Invalid username or password you stupid fuck!");
         }
     }
+
 
 
     @DeleteMapping("/delete/{id}") //Example test in Postman: DELETE http://localhost:8080/users/delete/1?password=testpassword
