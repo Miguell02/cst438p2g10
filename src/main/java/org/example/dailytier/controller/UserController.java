@@ -24,10 +24,13 @@ public class UserController {
 
     // log in existing broski
     @PostMapping("/login")
-    public ResponseEntity<String> loginUser(@RequestParam String username, @RequestParam String password) {
+    public ResponseEntity<String> loginUser(@RequestBody User loginRequest) {
+        String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
+
         boolean isLoggedIn = userService.loginUser(username, password);
         if (isLoggedIn) {
-            return ResponseEntity.ok("User logged in successfully!");
+            return ResponseEntity.ok("Okay you logged in brah!");
         } else {
             return ResponseEntity.status(401).body("Invalid username or password you stupid fuck!");
         }
