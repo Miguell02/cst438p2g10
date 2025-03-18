@@ -1,11 +1,20 @@
 document.addEventListener("DOMContentLoaded", function () {
     const username = localStorage.getItem("username");
     const userId = localStorage.getItem("userId");
+    const logoutBtn = document.getElementById("logoutBtn");
 
     if (!username || !userId) {
         alert("Please log in first!");
         window.location.href = "login.html";
         return;
+    }
+    // Logoutt
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", function () {
+            localStorage.removeItem("username");
+            alert("Bye bye asshole");
+            window.location.href = "login.html";
+        });
     }
 
     fetch(`/users/profile?username=${username}`)
@@ -39,4 +48,14 @@ document.addEventListener("DOMContentLoaded", function () {
                 .catch(error => console.error("Error deleting account:", error));
         }
     });
+
+    let isAdmin = localStorage.getItem('admin'); // This assumes you store the admin status in localStorage
+
+    if (username === 'admin'){
+        isAdmin = localStorage.setItem(true);
+    }
+    // If the user is not an admin, hide the "Admin" link
+    if (isAdmin !== 'true') {
+        document.getElementById('adminLink').style.display = 'none';
+    }
 });
