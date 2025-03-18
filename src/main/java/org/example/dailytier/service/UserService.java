@@ -7,6 +7,7 @@ import java.util.logging.Logger;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import java.util.Optional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +17,7 @@ public class UserService {
 
     @Autowired
     private UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     //admin
     public boolean adminLogin(String username, String password) {
@@ -102,9 +104,6 @@ public class UserService {
         return true;
     }
 
-
-
-
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
@@ -113,16 +112,15 @@ public class UserService {
     public User createUser(String username, String password, String email) {
         User newUser = new User();
         newUser.setUsername(username);
-        newUser.setPassword(password);
+        newUser.setPassword(passwordEncoder.encode(password));
         newUser.setEmail(email);
-
         return userRepository.save(newUser);
     }
 
 
     public boolean loginUser(String username, String password) {
         User user = userRepository.findByUsername(username);
-        if (user != null && user.getPassword().equals(password)) {
+        if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             return true;
         }
         return false;
@@ -133,7 +131,7 @@ public class UserService {
 
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            if (user.getPassword().equals(password)) {  // Ensure password matches
+            if (user.getPassword().equals(password)) {
                 userRepository.deleteById(id);
                 return true;
             }
@@ -145,7 +143,11 @@ public class UserService {
         User existingUser = userRepository.findById(id).orElse(null);
         if (existingUser != null) {
             existingUser.setUsername(updatedUser.getUsername());
-            existingUser.setPassword(updatedUser.getPassword());
+
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                existingUser.setPassword(passwordEncoder.encode(updatedUser.getPassword()));
+            }
+
             existingUser.setEmail(updatedUser.getEmail());
             userRepository.save(existingUser);
             return true;
