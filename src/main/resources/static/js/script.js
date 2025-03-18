@@ -52,17 +52,27 @@ document.addEventListener("DOMContentLoaded", function () {
             const credentials = { username, password };
 
             try {
-                const response = await fetch("http://localhost:8080/users/login?username=" + username + "&password=" + password, {
+                const response = await fetch(`http://localhost:8080/users/login?username=${username}&password=${password}`, {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                 });
-                const textResponse = await response.text();
+
                 if (response.ok) {
-                    alert(textResponse);
-                    localStorage.setItem("username", username);
-                    window.location.href = "dashboard.html";
+                    const user = await response.json(); // Get user object from response
+                    localStorage.setItem("username", user.username);
+                    localStorage.setItem("userId", user.id); // Store userId in localStorage
+
+                    if (user.isAdmin) {
+                        localStorage.setItem("admin", "true");
+                    } else {
+                        localStorage.setItem("admin", "false");
+                    }
+
+                    alert("Login successful!");
+                    window.location.href = "index.html";
                 } else {
-                    alert("Login DIDNT WORK!!!: " + textResponse);
+                    const errorMessage = await response.text();
+                    alert("Login DIDNT WORK!!!: " + errorMessage);
                 }
             } catch (error) {
                 console.error("Error:", error);
