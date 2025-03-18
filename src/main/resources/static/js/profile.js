@@ -20,8 +20,10 @@ document.addEventListener("DOMContentLoaded", function () {
     fetch(`/users/profile?username=${username}`)
         .then(response => response.json())
         .then(user => {
+            document.get
             document.getElementById("username").innerText = user.username;
             document.getElementById("email").innerText = user.email;
+            document.getElementById("password").innerText = user.password;
         })
         .catch(error => console.error("Error fetching profile:", error));
 

@@ -105,11 +105,6 @@ public class UserService {
 
 
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
-
     public User createUser(String username, String password, String email) {
         User newUser = new User();
         newUser.setUsername(username);
@@ -161,6 +156,9 @@ public class UserService {
         return userRepository.findByUsername(username);
     }
 
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
 
 }
 
