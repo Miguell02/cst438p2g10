@@ -63,9 +63,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
                 const textResponse = await response.text();
                 if (response.ok) {
-                    alert(textResponse);
-                    localStorage.setItem("username", username);
-                    window.location.href = "dashboard.html";
+                    const user = await response.json(); // Get user object from response
+                    localStorage.setItem("username", user.username);
+                    localStorage.setItem("userId", user.id); // Store userId in localStorage
+
+                    if (user.isAdmin) {
+                        localStorage.setItem("admin", "true");
+                    } else {
+                        localStorage.setItem("admin", "false");
+                    }
+
+                    alert("Login successful!");
+                    window.location.href = "index.html";
                 } else {
                     alert("Login DIDN'T WORK: " + textResponse);
                 }

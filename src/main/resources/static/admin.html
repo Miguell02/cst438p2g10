@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<h1 id="title">Admin Panel</h1>
+
+<div class="topnav">
+  <a href="index.html">Home</a>
+  <a href="profile.html">Profile</a>
+  <a class="active" id="adminLink" href="admin.html">Admin Controls</a>
+</div>
+
+<h2>All Users</h2>
+<button id="viewUsersBtn">View Users</button>
+<br><br>
+<table class="table" border="1">
+  <thead>
+  <tr>
+    <th>Username</th>
+    <th>Email</th>
+    <th>Actions</th>
+  </tr>
+  </thead>
+  <tbody id="usersTableBody">
+  <!-- User rows will be added dynamically here -->
+  </tbody>
+</table>
+
+<h2>Create User</h2>
+<form id="createUserForm">
+  <input type="text" id="newUsername" placeholder="Username" required>
+  <input type="email" id="newEmail" placeholder="Email" required>
+  <input type="password" id="newPassword" placeholder="Password" required>
+  <button type="submit">Create User</button>
+</form>
+
+<script src="js/admin.js"></script>
+</body>
+</html>
