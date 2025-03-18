@@ -37,7 +37,6 @@ public class UserController {
     }
 
 
-
     @DeleteMapping("/delete/{id}") //Example test in Postman: DELETE http://localhost:8080/users/delete/1?password=testpassword
     public String deleteUser(@PathVariable Long id, @RequestParam String password) {
         boolean isDeleted = userService.deleteUser(id, password);
