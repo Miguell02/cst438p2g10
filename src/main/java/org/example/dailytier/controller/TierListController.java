@@ -17,7 +17,7 @@ public class TierListController {
 
     @GetMapping("/")
     public String home() {
-        return "index.html";  // Serves signup.html from resources/static/
+        return "Intro.html";  // Serves signup.html from resources/static/
     }
 
     @GetMapping("/login")
