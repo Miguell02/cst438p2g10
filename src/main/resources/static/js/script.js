@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (response.ok) {
                     alert(textResponse);
                     localStorage.setItem("username", username);
-                    window.location.href = "dashboard.html";
+                    window.location.href = "index.html";
                 } else {
                     alert("Login DIDN'T WORK: " + textResponse);
                 }
