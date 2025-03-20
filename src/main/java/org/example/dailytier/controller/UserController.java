@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+/// START WORKING ON BYCRYPT BRAH
 @RestController
 @RequestMapping("/users")
 public class UserController {
@@ -24,16 +24,17 @@ public class UserController {
 
     // log in existing broski
     @PostMapping("/login")
-    public ResponseEntity<?> loginUser(@RequestParam String username, @RequestParam String password) {
-        User user = userService.getUserByUsername(username);
+    public ResponseEntity<String> loginUser(@RequestBody User loginRequest) {
+        String username = loginRequest.getUsername();
+        String password = loginRequest.getPassword();
 
-        if (user != null && userService.loginUser(username, password)) {
-            return ResponseEntity.ok(user); // Return user object with ID
+        boolean isLoggedIn = userService.loginUser(username, password);
+        if (isLoggedIn) {
+            return ResponseEntity.ok("Okay you logged in brah!");
         } else {
             return ResponseEntity.status(401).body("Invalid username or password you stupid fuck!");
         }
     }
-
 
 
     @DeleteMapping("/delete/{id}") //Example test in Postman: DELETE http://localhost:8080/users/delete/1?password=testpassword

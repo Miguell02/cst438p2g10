@@ -26,6 +26,8 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     implementation 'javax.servlet:javax.servlet-api:4.0.1'
 
+    implementation 'org.springframework.security:spring-security-crypto:5.7.3'
+
 }
 
 tasks.named('test') {
