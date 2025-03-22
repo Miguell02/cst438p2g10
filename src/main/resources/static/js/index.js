@@ -4,6 +4,9 @@
 //
 const username = localStorage.getItem("username");
 let isAdmin = localStorage.getItem('admin');// This assumes you store the admin status in localStorage
+const userId = Number(localStorage.getItem("userId"));
+console.log("User ID from localStorage:", userId);
+console.log("User ID from localStorage:", username);
 
 if (username === 'admin'){
        isAdmin = localStorage.setItem(true);

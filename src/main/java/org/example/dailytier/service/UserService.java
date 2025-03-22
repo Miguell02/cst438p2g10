@@ -3,55 +3,46 @@ package org.example.dailytier.service;
 import org.example.dailytier.model.User;
 import org.example.dailytier.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.logging.Logger;
-import java.util.List;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class UserService {
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private static final Logger logger = Logger.getLogger(UserService.class.getName());
 
-    //admin
-    public boolean adminLogin(String username, String password) {
-        User user = userRepository.findByUsername(username);
-
-        if (user == null) {
-            System.out.println("User not found: " + username);
-            return false;
-        }
-
-        if (!user.isAdmin()) {
-            System.out.println("User is not an admin: " + username);
-            return false;
-        }
-
-        if (!user.getPassword().equals(password)) {
-            System.out.println("Password does not match for user: " + username);
-            return false;
-        }
-
-        return true; // Login successful
+    private boolean isAdminValid(String adminUsername, String adminPassword) {
+        User admin = userRepository.findByUsername(adminUsername);
+        return admin != null && admin.isAdmin() && passwordEncoder.matches(adminPassword, admin.getPassword());
     }
 
+    public boolean adminLogin(String username, String password) {
+        User user = userRepository.findByUsername(username);
+        if (user == null || !user.isAdmin() || !passwordEncoder.matches(password, user.getPassword())) {
+            logger.warning("Login failed for admin user: " + username);
+            return false;
+        }
+        return true;
+    }
 
     public User createUserAsAdmin(String adminUsername, String adminPassword, String newUsername, String newPassword, String newEmail) {
-        User admin = userRepository.findByUsername(adminUsername);
-
-        if (admin == null || !admin.isAdmin() || !admin.getPassword().equals(adminPassword)) {
+        if (!isAdminValid(adminUsername, adminPassword)) {
             return null;
         }
 
         User newUser = new User();
         newUser.setUsername(newUsername);
-        newUser.setPassword(newPassword);
+        newUser.setPassword(passwordEncoder.encode(newPassword));
         newUser.setEmail(newEmail);
         newUser.setAdmin(false);
 
@@ -108,7 +99,6 @@ public class UserService {
         return userRepository.findAll();
     }
 
-
     public User createUser(String username, String password, String email) {
         User newUser = new User();
         newUser.setUsername(username);
@@ -116,7 +106,6 @@ public class UserService {
         newUser.setEmail(email);
         return userRepository.save(newUser);
     }
-
 
     public boolean loginUser(String username, String password) {
         User user = userRepository.findByUsername(username);
@@ -126,16 +115,26 @@ public class UserService {
         return false;
     }
 
-    public boolean deleteUser(Long id, String password) {
-        Optional<User> userOptional = userRepository.findById(id);
+    public boolean deleteUser(Long userId, String password) {
+        System.out.println("Deleting user: " + userId);
+        User user = userRepository.findById(userId).orElse(null);
 
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            if (user.getPassword().equals(password)) {
-                userRepository.deleteById(id);
+        if (user != null) {
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+            // Debugging log
+            System.out.println("Stored password (hashed): " + user.getPassword());
+            System.out.println("Password provided (plain text): " + password);
+
+            // Compare hashed passwords
+            if (passwordEncoder.matches(password, user.getPassword())) {
+                userRepository.delete(user);
                 return true;
+            } else {
+                return false;
             }
         }
+
         return false;
     }
 
@@ -155,6 +154,26 @@ public class UserService {
         return false;
     }
 
+    public User updateUserDetails(Long id, User updatedUser) {
+        Optional<User> existingUser = userRepository.findById(id);
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+
+            // Check if password is being updated, and hash it
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                String hashedPassword = passwordEncoder.encode(updatedUser.getPassword());
+                user.setPassword(hashedPassword);
+            }
+
+            // Update username and email
+            user.setUsername(updatedUser.getUsername());
+            user.setEmail(updatedUser.getEmail());
+
+            return userRepository.save(user);
+        }
+        return null; // Return null if user not found
+    }
+
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
@@ -162,8 +181,4 @@ public class UserService {
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-
-
 }
-
-

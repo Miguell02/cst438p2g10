@@ -32,27 +32,46 @@ public class UserController {
         if (isLoggedIn) {
             return ResponseEntity.ok("Okay you logged in brah!");
         } else {
-            return ResponseEntity.status(401).body("Invalid username or password you stupid fuck!");
+            return ResponseEntity.status(401).body("Invalid username or password.");
+
+        }
+    }
+
+    @GetMapping("/userId")
+    public ResponseEntity<Long> getUserIdByUsername(@RequestParam String username) {
+        User user = userService.getUserByUsername(username);
+        if (user != null) {
+            return ResponseEntity.ok(user.getId()); // Assuming getId() returns the user's ID
+        } else {
+            return ResponseEntity.status(404).body(null); // User not found
         }
     }
 
 
-    @DeleteMapping("/delete/{id}") //Example test in Postman: DELETE http://localhost:8080/users/delete/1?password=testpassword
-    public String deleteUser(@PathVariable Long id, @RequestParam String password) {
+    @DeleteMapping("/delete/{id}") // Example test in Postman: DELETE http://localhost:8080/users/delete/1?password=testpassword
+    public ResponseEntity<String> deleteUser(@PathVariable Long id, @RequestParam String password) {
+        System.out.println("Deleting user: " + id);
         boolean isDeleted = userService.deleteUser(id, password);
-        return isDeleted ? "User deleted successfully" : "Password confirmation failed, user not deleted";
+
+        if (isDeleted) {
+            return ResponseEntity.ok("User deleted successfully");
+        } else {
+            return ResponseEntity.status(400).body("Password confirmation failed or user not found");
+        }
     }
+
 
     // update details brah
     @PatchMapping("/update/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody User user) {
-        boolean isUpdated = userService.updateUser(id, user);
-        if (isUpdated) {
-            return ResponseEntity.ok("User details updated successfully");
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+        User updated = userService.updateUserDetails(id, updatedUser);
+        if (updated != null) {
+            return ResponseEntity.ok(updated);
         } else {
-            return ResponseEntity.status(400).body("User update failed");
+            return ResponseEntity.status(400).body(null); // Bad request if update fails
         }
     }
+
 
     //get user by id
     @GetMapping("/{id}")
