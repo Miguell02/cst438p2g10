@@ -1,46 +1,4 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const signupForm = document.getElementById("signupForm");
-    if (signupForm) {
-        signupForm.addEventListener("submit", async function (event) {
-            event.preventDefault();
-
-            const name = document.getElementById("name").value;
-            const email = document.getElementById("email").value;
-            const password = document.getElementById("password").value;
-            const confirmPassword = document.getElementById("confirmPassword").value;
-
-            if (password !== confirmPassword) {
-                alert("Passwords don't match, brah!");
-                return;
-            }
-
-            const userData = {
-                username: name,
-                email: email,
-                password: password,
-            };
-
-            try {
-                const response = await fetch("http://localhost:8080/users/newuser", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(userData),
-                });
-
-                if (response.ok) {
-                    alert("Signup successful! Going to login, brah...");
-                    window.location.href = "login.html";
-                } else {
-                    const errorData = await response.json();
-                    alert("Signup has failed: " + (errorData.message || "Unknown error"));
-                }
-            } catch (error) {
-                console.error("Error:", error);
-                alert("An error occurred you asshole");
-            }
-        });
-    }
-
     const loginForm = document.getElementById("loginForm");
     if (loginForm) {
         loginForm.addEventListener("submit", async function (event) {
@@ -55,23 +13,41 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             try {
-                const response = await fetch("http://localhost:8080/users/login", {
+                // First, try to log in
+                const loginResponse = await fetch("http://localhost:8080/users/login", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify(loginData),
                 });
 
-                const textResponse = await response.text();
-                if (response.ok) {
-                    alert(textResponse);
-                    localStorage.setItem("username", username);
-                    window.location.href = "index.html";
+                if (loginResponse.ok) {
+                    // If login is successful, fetch the userId by username
+                    const userIdResponse = await fetch(`http://localhost:8080/users/userId?username=${username}`, {
+                        method: "GET",
+                    });
+
+                    if (userIdResponse.ok) {
+                        const userIdData = await userIdResponse.json();
+                        const userId = userIdData; // Extract the userId
+                        console.log(userId);
+
+                        // Store userId in localStorage
+                        localStorage.setItem("username", username);
+                        localStorage.setItem("userId", userId);
+
+                        alert("Login successful!");
+                        window.location.href = "index.html";
+                    } else {
+                        const errorData = await userIdResponse.json();
+                        alert("User ID fetch failed: " + errorData.message);
+                    }
                 } else {
-                    alert("Login DIDN'T WORK: " + textResponse);
+                    const loginErrorData = await loginResponse.json();
+                    alert("Login failed: " + loginErrorData.message);
                 }
             } catch (error) {
                 console.error("Error:", error);
-                alert("Something went wrong, FUCK");
+                alert("An error occurred during login");
             }
         });
     }

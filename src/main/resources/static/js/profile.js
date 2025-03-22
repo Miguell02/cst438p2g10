@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const username = localStorage.getItem("username");
-    const userId = localStorage.getItem("userId");
+    const userId = Number(localStorage.getItem("userId"));
+    console.log("User ID from localStorage:", userId);
     const logoutBtn = document.getElementById("logoutBtn");
 
     if (!username || !userId) {
@@ -34,6 +35,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (confirm("Are you sure you want to delete your account? This action cannot be undone!")) {
+            console.log("Deleting user with ID:", userId);
+            console.log("Password provided:", password);
             fetch(`/users/delete/${userId}?password=${encodeURIComponent(password)}`, {
                 method: "DELETE"
             })
