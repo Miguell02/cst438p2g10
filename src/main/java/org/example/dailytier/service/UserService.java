@@ -3,21 +3,22 @@ package org.example.dailytier.service;
 import org.example.dailytier.model.User;
 import org.example.dailytier.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import java.util.logging.Logger;
-import java.util.List;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import java.util.Optional;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.logging.Logger;
 
 @Service
 public class UserService {
 
     @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
     private UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
     private static final Logger logger = Logger.getLogger(UserService.class.getName());
 
     private boolean isAdminValid(String adminUsername, String adminPassword) {
@@ -98,7 +99,6 @@ public class UserService {
         return userRepository.findAll();
     }
 
-
     public User createUser(String username, String password, String email) {
         User newUser = new User();
         newUser.setUsername(username);
@@ -106,7 +106,6 @@ public class UserService {
         newUser.setEmail(email);
         return userRepository.save(newUser);
     }
-
 
     public boolean loginUser(String username, String password) {
         User user = userRepository.findByUsername(username);
@@ -139,8 +138,6 @@ public class UserService {
         return false;
     }
 
-
-
     public boolean updateUser(Long id, User updatedUser) {
         User existingUser = userRepository.findById(id).orElse(null);
         if (existingUser != null) {
@@ -157,6 +154,26 @@ public class UserService {
         return false;
     }
 
+    public User updateUserDetails(Long id, User updatedUser) {
+        Optional<User> existingUser = userRepository.findById(id);
+        if (existingUser.isPresent()) {
+            User user = existingUser.get();
+
+            // Check if password is being updated, and hash it
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                String hashedPassword = passwordEncoder.encode(updatedUser.getPassword());
+                user.setPassword(hashedPassword);
+            }
+
+            // Update username and email
+            user.setUsername(updatedUser.getUsername());
+            user.setEmail(updatedUser.getEmail());
+
+            return userRepository.save(user);
+        }
+        return null; // Return null if user not found
+    }
+
     public User getUserById(Long id) {
         return userRepository.findById(id).orElse(null);
     }
@@ -164,8 +181,4 @@ public class UserService {
     public User getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
-
-
 }
-
-

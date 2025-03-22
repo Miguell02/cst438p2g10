@@ -63,14 +63,15 @@ public class UserController {
 
     // update details brah
     @PatchMapping("/update/{id}")
-    public ResponseEntity<String> updateUser(@PathVariable Long id, @RequestBody User user) {
-        boolean isUpdated = userService.updateUser(id, user);
-        if (isUpdated) {
-            return ResponseEntity.ok("User details updated successfully");
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User updatedUser) {
+        User updated = userService.updateUserDetails(id, updatedUser);
+        if (updated != null) {
+            return ResponseEntity.ok(updated);
         } else {
-            return ResponseEntity.status(400).body("User update failed");
+            return ResponseEntity.status(400).body(null); // Bad request if update fails
         }
     }
+
 
     //get user by id
     @GetMapping("/{id}")
