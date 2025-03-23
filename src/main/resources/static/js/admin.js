@@ -1,89 +1,120 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const viewUsersBtn = document.getElementById("viewUsersBtn");
-    const usersTableBody = document.getElementById("usersTableBody");
-    const createUserForm = document.getElementById("createUserForm");
+document.getElementById("viewUsersBtn").addEventListener("click", async () => {
+    try {
+        const res = await fetch('/admin/users?username=admin&password=ott3r');
+        const users = await res.json();
+        window.userList = users;
 
-    const API_URL = "http://localhost:8080/users/all";
+        const tbody = document.getElementById("usersTableBody");
+        tbody.innerHTML = "";
 
-    // Fetch and display all users
-    viewUsersBtn.addEventListener("click", async function () {
-        try {
-            const response = await fetch(API_URL);
-            if (!response.ok) throw new Error("Failed to fetch users");
+        users.forEach(user => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+        <td>${user.username}</td>
+        <td>${user.email}</td>
+        <td>
+          <button onclick="updateUser('${user.username}')">Edit</button>
+          <button onclick="deleteUser('${user.username}')">Delete</button>
+        </td>
+      `;
+            tbody.appendChild(row);
+        });
+    } catch (err) {
+        console.error("Failed to load users:", err);
+        alert("Error loading users.");
+    }
+});
 
-            const users = await response.json();
-            usersTableBody.innerHTML = ""; // Clear existing data
+window.deleteUser = async function (username) {
+    if (!confirm(`Are you sure you want to delete ${username}?`)) return;
 
-            users.forEach(user => {
-                const row = document.createElement("tr");
-                row.innerHTML = `
-                    <td>${user.username}</td>
-                    <td>${user.email}</td>
-                    <td>
-                        <button onclick="updateUser('${user.username}')">Edit</button>
-                        <button onclick="deleteUser('${user.username}')">Delete</button>
-                    </td>
-                `;
-                usersTableBody.appendChild(row);
-            });
-        } catch (error) {
-            console.error("Error fetching users:", error);
-            alert("Could not retrieve users.");
-        }
-    });
+    const user = window.userList.find(u => u.username === username);
+    if (!user) {
+        alert("User not found.");
+        return;
+    }
 
-    // Create a new user
-    const API_URL_CREATE_USER = "http://localhost:8080/users";
-    createUserForm.addEventListener("submit", async function (event) {
-        event.preventDefault();
+    try {
+        const res = await fetch(`/admin/users/${user.id}?username=admin&password=ott3r&confirm=true`, {
+            method: 'DELETE'
+        });
 
-        const newUsername = document.getElementById("newUsername").value.trim();
-        const newEmail = document.getElementById("newEmail").value.trim();
-        const newPassword = document.getElementById("newPassword").value;
+        const msg = await res.text();
+        alert(msg);
+        document.getElementById("viewUsersBtn").click(); // Refresh table
+    } catch (error) {
+        console.error("Delete error:", error);
+        alert("Failed to delete user.");
+    }
+};
 
-        if (!newUsername || !newEmail || !newPassword) {
-            alert("Please fill in all fields.");
-            return;
-        }
+window.updateUser = async function (username) {
+    const newEmail = prompt(`Enter new email for ${username}:`);
+    const newPassword = prompt(`Enter new password for ${username}:`);
 
-        try {
-            const response = await fetch(API_URL_CREATE_USER + "/newuser", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ username: newUsername, email: newEmail, password: newPassword }),
-            });
+    if (!newEmail || !newPassword) {
+        alert("Update cancelled.");
+        return;
+    }
 
-            if (response.ok) {
-                alert("User created successfully!");
-                createUserForm.reset();
-                viewUsersBtn.click(); // Refresh user list
-            } else {
-                const errorData = await response.json();
-                alert("Error: " + (errorData.message || "Failed to create user"));
-            }
-        } catch (error) {
-            console.error("Error:", error);
-            alert("An error occurred. Please try again.");
-        }
-    });
+    const user = window.userList.find(u => u.username === username);
+    if (!user) {
+        alert("User not found.");
+        return;
+    }
 
-    // Update a user
-    window.updateUser = async function (username) {
-        const newEmail = prompt(`Enter new email for ${username}:`);
-        const newPassword = prompt(`Enter new password for ${username}:`);
+    try {
+        const res = await fetch(`/admin/users?username=admin&password=ott3r&updateUsername=${username}&newEmail=${encodeURIComponent(newEmail)}&newPassword=${encodeURIComponent(newPassword)}`, {
+            method: 'PATCH'
+        });
 
-        if (!newEmail || !newPassword) {
-            alert("Update cancelled.");
-            return;
-        }
+        const msg = await res.text();
+        alert(msg);
+        document.getElementById("viewUsersBtn").click(); // Refresh table
+    } catch (error) {
+        console.error("Update error:", error);
+        alert("Failed to update user.");
+    }
+};
 
-        //IMPLEMENT DELETE USER LOGIC NEXT
+document.getElementById("createUserForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const username = document.getElementById("newUsername").value.trim();
+    const email = document.getElementById("newEmail").value.trim();
+    const password = document.getElementById("newPassword").value;
+
+    if (!username || !email || !password) {
+        alert("All fields are required.");
+        return;
+    }
+
+    const userData = {
+        username: username,
+        password: password,
+        email: email
     };
 
-    // Delete a user
-    window.deleteUser = async function (username) {
-        if (!confirm(`Are you sure you want to delete ${username}?`)) return;
+    try {
+        const res = await fetch(`/admin/users?username=admin&password=ott3r`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(userData)
+        });
 
-        //IMPLEMENT DELETE USER LOGIC NEXT
-    };
+        const msg = await res.text();
+        alert(msg);
+
+        // Clear form
+        document.getElementById("createUserForm").reset();
+
+        // Refresh the user table
+        document.getElementById("viewUsersBtn").click();
+
+    } catch (error) {
+        console.error("Create user error:", error);
+        alert("Failed to create user.");
+    }
 });

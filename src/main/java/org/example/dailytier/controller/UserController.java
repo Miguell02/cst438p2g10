@@ -96,4 +96,20 @@ public class UserController {
         return userService.getUserByUsername(username);
     }
 
+    @PutMapping("/register")
+    public ResponseEntity<String> registerUserViaParams(@RequestParam String username,
+                                                        @RequestParam String email,
+                                                        @RequestParam String password) {
+        User createdUser = userService.createUser(username, password, email);
+
+        if (createdUser != null) {
+            return ResponseEntity.ok("User created successfully: " + createdUser.getUsername());
+        } else {
+            return ResponseEntity.status(400).body("Failed to create user.");
+        }
+    }
+
+
+
+
 }
