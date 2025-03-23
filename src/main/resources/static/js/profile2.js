@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
         .then(response => response.json())
         .then(user => {
             document.get
-            document.getElementById("username").innerText = user.username;
+            document.getElementById("name").innerText = user.username;
             document.getElementById("email").innerText = user.email;
             document.getElementById("password").innerText = user.password;
         })
