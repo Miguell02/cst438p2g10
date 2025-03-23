@@ -2,16 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Profile</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+<h1 id="title">Hello, <span id="username"></span></h1>
+
+<div class="topnav">
+    <a href="index.html">Home</a>
+    <a href="profile.html">Profile</a>
+    <a id="adminLink" href="admin.html">Admin</a>
+    <a class="active" href="profile2.html"> Account Detail</a>
+</div>
+
+<p>Username: <span id="username"></span></p>
+<p>Email: <span id="email"></span></p>
+<p>Password: <span id="password"> </span> </p>
+
 <h2>Update Profile</h2>
-<label for="usernameInput">New Username:</label>
-<input type="text" id="usernameInput" placeholder="Enter new username">
+<div class="form-container">
+    <label for="usernameInput">New Username:</label>
+    <input type="text" id="usernameInput" placeholder="Enter new username">
 
-<label for="passwordInput">New Password:</label>
-<input type="password" id="passwordInput" placeholder="Enter new password">
-
+    <label for="passwordInput">New Password:</label>
+    <input type="password" id="passwordInput" placeholder="Enter new password">
+</div>
 <button id="updateProfileBtn">Update Profile</button>
+
+<button id="logoutBtn">Logout</button>
+
+<script src="js/profile2.js">
+
+</script>
 </body>
 </html>

@@ -1,7 +1,40 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
     const updateBtn = document.getElementById("updateProfileBtn"); // Ensure you have this button in your HTML
     const usernameInput = document.getElementById("usernameInput");
     const passwordInput = document.getElementById("passwordInput");
+    const username = localStorage.getItem("username");
+    const userId = localStorage.getItem("userId");
+    const logoutBtn = document.getElementById("logoutBtn");
+
+
+    if (!username || !userId) {
+        alert("Please log in first!");
+        window.location.href = "login.html";
+        return;
+    }
+    // Logoutt
+    if (logoutBtn) {
+        logoutBtn.addEventListener("click", function () {
+            localStorage.removeItem("username");
+            alert("Bye bye asshole");
+            window.location.href = "login.html";
+        });
+    }
+
+    fetch(`/users/profile?username=${username}`)
+        .then(response => response.json())
+        .then(user => {
+            document.get
+            document.getElementById("username").innerText = user.username;
+            document.getElementById("email").innerText = user.email;
+            document.getElementById("password").innerText = user.password;
+        })
+        .catch(error => console.error("Error fetching profile:", error));
+
+
+
+
+
 
     updateBtn.addEventListener("click", async () => {
         const newUsername = usernameInput.value.trim();
@@ -48,4 +81,17 @@ document.addEventListener("DOMContentLoaded", () => {
             alert(error.message);
         }
     });
+
+    let isAdmin = localStorage.getItem('admin'); // This assumes you store the admin status in localStorage
+
+    if (username === 'admin'){
+        isAdmin = localStorage.setItem(true);
+    }
+    // If the user is not an admin, hide the "Admin" link
+    if (isAdmin !== 'true') {
+        document.getElementById('adminLink').style.display = 'none';
+    }
+
+
+
 });

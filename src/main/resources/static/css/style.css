@@ -17,6 +17,7 @@ input {
     margin-bottom: 10px;
     height: 22px;
     font-size: 15px;
+
 }
 button {
     background-color: #28a745;
@@ -75,4 +76,39 @@ button:hover{
 .topnav a.active {
     background-color: #04AA6D;
     color: white;
+}
+
+
+
+
+
+
+
+#usernameInput {
+    text-align: center;       /* centers text inside */
+
+    font-weight: lighter;
+
+    display: flex;            /* center the element */
+    justify-content: center; /* horizontally */
+    align-items: center;     /* vertically */ /* full screen height, adjust as needed */
+}
+
+#passwordInput {
+    text-align: center;       /* centers text inside */
+
+    font-weight: lighter;
+
+    display: flex;            /* center the element */
+    justify-content: center; /* horizontally */
+    align-items: center;     /* vertically */ /* full screen height, adjust as needed */
+}
+
+.form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center items horizontally */
+    justify-content: center; /* Optional: vertical centering */
+    gap: 10px; /* space between inputs */
+    margin-top: 20px;
 }
