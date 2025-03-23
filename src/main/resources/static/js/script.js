@@ -52,3 +52,48 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 });
+
+document.addEventListener("DOMContentLoaded", () => {
+    const signupForm = document.getElementById("signupForm");
+
+    if (signupForm) {
+        signupForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            const name = document.getElementById("name").value.trim();
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                return;
+            }
+
+            const userData = {
+                username: name,
+                email: email,
+                password: password
+            };
+
+            try {
+                const response = await fetch("http://localhost:8080/users/newuser", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(userData),
+                });
+
+                const result = await response.text();
+                alert(result);
+
+                if (response.ok) {
+                    window.location.href = "login.html"; // Redirect to login after signup
+                }
+
+            } catch (err) {
+                console.error("Signup error:", err);
+                alert("An error occurred while creating your account.");
+            }
+        });
+    }
+});

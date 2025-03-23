@@ -36,7 +36,15 @@ public class UserService {
     }
 
     public User createUserAsAdmin(String adminUsername, String adminPassword, String newUsername, String newPassword, String newEmail) {
-        if (!isAdminValid(adminUsername, adminPassword)) {
+        User admin = userRepository.findByUsername(adminUsername);
+
+        if (admin == null || !admin.isAdmin() || !passwordEncoder.matches(adminPassword, admin.getPassword())) {
+            System.out.println("ADMIN CHECK FAILED");
+            return null;
+        }
+
+        if (userRepository.findByUsername(newUsername) != null) {
+            System.out.println("DUPLICATE USER");
             return null;
         }
 
@@ -44,15 +52,15 @@ public class UserService {
         newUser.setUsername(newUsername);
         newUser.setPassword(passwordEncoder.encode(newPassword));
         newUser.setEmail(newEmail);
-        newUser.setAdmin(false);
 
         return userRepository.save(newUser);
     }
 
+
     public boolean deleteUserAsAdmin(String adminUsername, String adminPassword, String deleteUsername, boolean confirm) {
         User admin = userRepository.findByUsername(adminUsername);
 
-        if (admin == null || !admin.isAdmin() || !admin.getPassword().equals(adminPassword)) {
+        if (admin == null || !admin.isAdmin() || !passwordEncoder.matches(adminPassword, admin.getPassword())) {
             return false; // Unauthorized
         }
 
@@ -74,7 +82,7 @@ public class UserService {
     public boolean updateUserAsAdmin(String adminUsername, String adminPassword, String updateUsername, String newEmail, String newPassword) {
         User admin = userRepository.findByUsername(adminUsername);
 
-        if (admin == null || !admin.isAdmin() || !admin.getPassword().equals(adminPassword)) {
+        if (admin == null || !admin.isAdmin() || !passwordEncoder.matches(adminPassword, admin.getPassword())) {
             return false;
         }
 
@@ -88,7 +96,7 @@ public class UserService {
         }
 
         if (newPassword != null && !newPassword.isEmpty()) {
-            userToUpdate.setPassword(newPassword);
+            userToUpdate.setPassword(passwordEncoder.encode(newPassword));
         }
 
         userRepository.save(userToUpdate);
@@ -126,13 +134,16 @@ public class UserService {
             System.out.println("Stored password (hashed): " + user.getPassword());
             System.out.println("Password provided (plain text): " + password);
 
-            // Compare hashed passwords
-            if (passwordEncoder.matches(password, user.getPassword())) {
-                userRepository.delete(user);
-                return true;
-            } else {
-                return false;
+            // admin can delete any user, so skip password check
+            if (password != null) {
+                if (!passwordEncoder.matches(password, user.getPassword())) {
+                    return false;
+                }
             }
+
+            // Password was either valid, or this is an admin (null password means skip check)
+            userRepository.delete(user);
+            return true;
         }
 
         return false;

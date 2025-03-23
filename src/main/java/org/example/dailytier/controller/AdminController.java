@@ -39,30 +39,34 @@ public class AdminController {
         }
     }
 
-    @PutMapping("/users")
-    public ResponseEntity<?> createUser(@RequestParam String username, @RequestParam String password,
-                                        @RequestParam String newUsername, @RequestParam String newPassword,
-                                        @RequestParam String newEmail) {
-        User createdUser = userService.createUserAsAdmin(username, password, newUsername, newPassword, newEmail);
+//    @PutMapping("/users")
+//    public ResponseEntity<?> createUser(@RequestParam String username, @RequestParam String password,
+//                                        @RequestParam String newUsername, @RequestParam String newPassword,
+//                                        @RequestParam String newEmail) {
+//        User createdUser = userService.createUserAsAdmin(username, password, newUsername, newPassword, newEmail);
+//
+//        if (createdUser == null) {
+//            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized action: Only admins can create users.");
+//        }
+//
+//        return ResponseEntity.ok("User created successfully: " + createdUser.getUsername());
+//    }
 
-        if (createdUser == null) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized action: Only admins can create users.");
-        }
-
-        return ResponseEntity.ok("User created successfully: " + createdUser.getUsername());
-    }
-
-    @DeleteMapping("/users")
+    @DeleteMapping("/users/{id}")
     public ResponseEntity<String> deleteUser(@RequestParam String username, @RequestParam String password,
-                                             @RequestParam String deleteUsername, @RequestParam boolean confirm) {
-        boolean isDeleted = userService.deleteUserAsAdmin(username, password, deleteUsername, confirm);
-
+                                             @PathVariable Long id, @RequestParam boolean confirm) {
+        boolean isAdmin = userService.adminLogin(username, password);
+        if (!isAdmin || !confirm) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized action.");
+        }
+        boolean isDeleted = userService.deleteUser(id, null);
         if (isDeleted) {
-            return ResponseEntity.ok("User " + deleteUsername + " deleted successfully.");
+            return ResponseEntity.ok("User deleted successfully.");
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized action or user not found.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("User not found or deletion failed.");
         }
     }
+
 
     @PatchMapping("/users")
     public ResponseEntity<String> updateUser(@RequestParam String username, @RequestParam String password, @RequestParam String updateUsername,
@@ -74,6 +78,19 @@ public class AdminController {
         } else {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized action or user not found.");
         }
+    }
+
+    @PutMapping("/users")
+    public ResponseEntity<?> createUserAsAdmin(@RequestParam String username,
+                                               @RequestParam String password,
+                                               @RequestBody User newUser) {
+        User createdUser = userService.createUserAsAdmin(username, password, newUser.getUsername(), newUser.getPassword(), newUser.getEmail());
+
+        if (createdUser == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Unauthorized action: Only admins can create users.");
+        }
+
+        return ResponseEntity.ok("User created successfully: " + createdUser.getUsername());
     }
 
 
