@@ -84,25 +84,9 @@ button:hover{
 
 
 
-#usernameInput {
-    text-align: center;       /* centers text inside */
 
-    font-weight: lighter;
 
-    display: flex;            /* center the element */
-    justify-content: center; /* horizontally */
-    align-items: center;     /* vertically */ /* full screen height, adjust as needed */
-}
 
-#passwordInput {
-    text-align: center;       /* centers text inside */
-
-    font-weight: lighter;
-
-    display: flex;            /* center the element */
-    justify-content: center; /* horizontally */
-    align-items: center;     /* vertically */ /* full screen height, adjust as needed */
-}
 
 .form-container {
     display: flex;

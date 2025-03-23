@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-    const updateBtn = document.getElementById("updateProfileBtn"); // Ensure you have this button in your HTML
+    const updateBtn = document.getElementById("updateProfileBtn");
     const usernameInput = document.getElementById("usernameInput");
     const passwordInput = document.getElementById("passwordInput");
     const username = localStorage.getItem("username");
@@ -28,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
             document.getElementById("name").innerText = user.username;
             document.getElementById("email").innerText = user.email;
             document.getElementById("password").innerText = user.password;
+            document.getElementById("username").innerText = user.username;
         })
         .catch(error => console.error("Error fetching profile:", error));
 
@@ -54,7 +55,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         try {
-            const response = await fetch(`https://yourapi.com/users/${userId}`, {
+            const response = await fetch(`http://localhost:8080/users/${userId}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
