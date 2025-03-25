@@ -84,7 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
 
                 const result = await response.text();
-                alert(result);
+                alert("Account Created Successfully!");
 
                 if (response.ok) {
                     window.location.href = "login.html"; // Redirect to login after signup
