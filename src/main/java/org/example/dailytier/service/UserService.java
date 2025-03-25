@@ -1,12 +1,15 @@
 package org.example.dailytier.service;
 
+import org.example.dailytier.model.TierList;
 import org.example.dailytier.model.User;
+import org.example.dailytier.repository.TierListRepository;
 import org.example.dailytier.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
@@ -16,6 +19,9 @@ public class UserService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private TierListRepository tierListRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -55,7 +61,6 @@ public class UserService {
 
         return userRepository.save(newUser);
     }
-
 
     public boolean deleteUserAsAdmin(String adminUsername, String adminPassword, String deleteUsername, boolean confirm) {
         User admin = userRepository.findByUsername(adminUsername);
@@ -123,6 +128,19 @@ public class UserService {
         return false;
     }
 
+    public List<TierList> getTierListsByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        if (user != null) {
+            return tierListRepository.findByUser(user);
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    public List<TierList> getAllTierLists() {
+        return tierListRepository.findAll();
+    }
+
     public boolean deleteUser(Long userId, String password) {
         System.out.println("Deleting user: " + userId);
         User user = userRepository.findById(userId).orElse(null);
@@ -130,18 +148,15 @@ public class UserService {
         if (user != null) {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
-            // Debugging log
             System.out.println("Stored password (hashed): " + user.getPassword());
             System.out.println("Password provided (plain text): " + password);
 
-            // admin can delete any user, so skip password check
             if (password != null) {
                 if (!passwordEncoder.matches(password, user.getPassword())) {
                     return false;
                 }
             }
 
-            // Password was either valid, or this is an admin (null password means skip check)
             userRepository.delete(user);
             return true;
         }
@@ -170,19 +185,17 @@ public class UserService {
         if (existingUser.isPresent()) {
             User user = existingUser.get();
 
-            // Check if password is being updated, and hash it
             if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
                 String hashedPassword = passwordEncoder.encode(updatedUser.getPassword());
                 user.setPassword(hashedPassword);
             }
 
-            // Update username and email
             user.setUsername(updatedUser.getUsername());
             user.setEmail(updatedUser.getEmail());
 
             return userRepository.save(user);
         }
-        return null; // Return null if user not found
+        return null;
     }
 
     public User getUserById(Long id) {

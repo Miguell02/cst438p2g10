@@ -1,7 +1,7 @@
 package org.example.dailytier.model;
 
 import jakarta.persistence.*;
-
+import java.util.List;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
@@ -25,8 +25,10 @@ public class User {
     private boolean isAdmin;
 
     @Column(name = "created_at", nullable = false, updatable = false, insertable = false)
-    private java.sql.Timestamp createdAt;
+    private Timestamp createdAt;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TierList> tierLists;
 
     // Getters
     public Long getId() {
@@ -44,9 +46,13 @@ public class User {
     public boolean isAdmin() {
         return isAdmin;
     }
-    public java.sql.Timestamp getCreatedAt() {
+    public Timestamp getCreatedAt() {
         return createdAt;
     }
+    public List<TierList> getTierLists() {
+        return tierLists;
+    }
+
     // Setters
     public void setId(Long id) {
         this.id = id;
@@ -63,9 +69,13 @@ public class User {
     public void setAdmin(boolean isAdmin) {
         this.isAdmin = isAdmin;
     }
-    public void setCreatedAt(java.sql.Timestamp createdAt) {
+    public void setCreatedAt(Timestamp createdAt) {
         this.createdAt = createdAt;
     }
+    public void setTierLists(List<TierList> tierLists) {
+        this.tierLists = tierLists;
+    }
+
     @PrePersist
     public void onPrePersist() {
         if (this.createdAt == null) {

@@ -18,6 +18,8 @@ input {
     height: 22px;
     font-size: 15px;
 }
+
+
 button {
     background-color: #28a745;
     color: white;
@@ -28,9 +30,79 @@ button {
     border-radius: 10px;
 }
 
+.tier-box {
+    display: inline-block;  /* Allows centering while maintaining structure */
+    width: 300px;  /* Adjust based on preference */
+    background: #f9f9f9;
+    padding: 15px;
+    margin: 15px;
+    border-radius: 8px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    text-align: left;  /* Ensures list alignment */
+}
+
+#tierList{
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Centers everything horizontally */
+    justify-content: center;
+    width: 100%;
+}
+
+.tier-box h3 {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.tier-list {
+    list-style-position: inside;  /* Ensures bullet points align properly */
+    padding: 0;
+}
+
+.tier {
+    display: flex;
+    align-items: center; /* Aligns text and input properly */
+    justify-content: center; /* Centers input relative to label */
+    width: 50%; /* Adjust width as needed */
+    gap: 10px; /* Adds spacing between text and input */
+}
+
+#tierName{
+    text-align: center; /* Centers the text inside the input */
+    width: 50%; /* Adjust width as needed */
+    padding: 8px; /* Adds some padding for better appearance */
+}
+
+.input-container {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+#viewTierListButton{
+    display: inline-block;
+    background-color: #808080;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    font-size: 16px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+#viewTierListButton:hover{
+    background-color: #6c6c6c;
+}
+
+
+button {
+    margin-top: 10px;
+}
+
 #deleteAccount {
     background-color: red;
 }
+
 
 .table{
     margin-left: auto;
