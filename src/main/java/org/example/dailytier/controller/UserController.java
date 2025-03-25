@@ -1,5 +1,6 @@
 package org.example.dailytier.controller;
 
+import org.example.dailytier.model.TierList;
 import org.example.dailytier.model.User;
 import org.example.dailytier.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,17 @@ public class UserController {
 
         }
     }
+
+    @GetMapping("/tier-lists/{username}")
+    public ResponseEntity<List<TierList>> getTierListsByUsername(@PathVariable String username) {
+        List<TierList> tierLists = userService.getTierListsByUsername(username);
+        if (tierLists != null && !tierLists.isEmpty()) {
+            return ResponseEntity.ok(tierLists);
+        } else {
+            return ResponseEntity.status(404).body(null); // No tier lists found
+        }
+    }
+
 
     @GetMapping("/userId")
     public ResponseEntity<Long> getUserIdByUsername(@RequestParam String username) {

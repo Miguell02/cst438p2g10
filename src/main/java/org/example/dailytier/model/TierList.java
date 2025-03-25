@@ -1,10 +1,9 @@
 package org.example.dailytier.model;
 
 import jakarta.persistence.*;
-import java.sql.Timestamp;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
-@Table(name = "tier_list")
 public class TierList {
 
     @Id
@@ -12,25 +11,24 @@ public class TierList {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
-    @Column(name = "tier_name", nullable = false)
     private String tierName;
 
-    @Column(name = "created_at")
-    private Timestamp createdAt = new Timestamp(System.currentTimeMillis());
+    @Column(columnDefinition = "TEXT") // Store JSON data
+    private String items;
 
-    // Getters and Setters
+    public TierList() {}
+
+    public TierList(User user, String tierName, String items) {
+        this.user = user;
+        this.tierName = tierName;
+        this.items = items;
+    }
+
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
-
     public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
-
     public String getTierName() { return tierName; }
-    public void setTierName(String tierName) { this.tierName = tierName; }
-
-    public Timestamp getCreatedAt() { return createdAt; }
-    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+    public String getItems() { return items; }
 }

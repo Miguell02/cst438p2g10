@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home Page</title>
     <link rel="stylesheet" href="css/style.css">
+
 </head>
 <body>
-    <h1 id="title"> Welcome to your Tierlists!</h1>
+    <h1 id="title"> Welcome to the Tier Lists!</h1>
 
 
     <div class="topnav">
@@ -15,6 +16,35 @@
         <a href="profile.html">Profile</a>
         <a id="adminLink" href="admin.html">Admin</a>
     </div>
+    <br>
+    <a id="viewTierListButton" href="ViewTierList.html">View your Tierlists</a>
+    <a id="viewTierListButton" href="ViewAllTierLists.html">View other Tierlists</a>
+    <br><br>
+    <hr>
+    <h2>Create Your Tier List</h2>
+
+    <div class="input-container">
+        <input type="text" id="tierName" placeholder="Enter Tier List Topic ">
+    </div>
+    <br><br>
+
+
+    <div class="tier-list" id="tierList">
+        <div class="tier"><b>S:</b> <input type="text" class="tier-input" data-rank="S"></div>
+        <div class="tier"><b>A: </b> <input type="text" class="tier-input" data-rank="A"></div>
+        <div class="tier"><b>B: </b> <input type="text" class="tier-input" data-rank="B"></div>
+        <div class="tier"><b>C: </b> <input type="text" class="tier-input" data-rank="C"></div>
+        <div class="tier"><b>D: </b> <input type="text" class="tier-input" data-rank="D"></div>
+        <div class="tier"><b>F: </b> <input type="text" class="tier-input" data-rank="F"></div>
+
+        <br>
+    <button onclick="submitTierList()">Submit</button>
+        <br><br>
+
+
+
+
+
 
     <script src="/js/index.js">
 
